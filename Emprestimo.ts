@@ -6,11 +6,14 @@ export class Emprestimo {
   private _devolvido: boolean = false;
 
   constructor(
+    // Associação: O empréstimo "tem um" Livro e "tem um" Membro.
     private _livro: Livro,
     private _membro: Membro,
+    // Data do empréstimo é criada automaticamente no momento da instância (agora).
     private _dataEmprestimo: Date = new Date()
   ) {}
 
+  // Apenas Getters para livro e membro, pois não devemos mudar o livro/membro de um empréstimo já feito.
   public get livro(): Livro {
     return this._livro;
   }
@@ -39,6 +42,8 @@ export class Emprestimo {
     this._devolvido = devolvido;
   }
 
+  // Exibe os detalhes do empréstimo.
+  // Mostra a data de devolução apenas se ela existir (if ternário).
   public toString(): string {
     const status = this._devolvido ? "Devolvido" : "Ativo";
     const devolucao = this._devolvido && this._dataDevolucao 

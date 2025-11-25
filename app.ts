@@ -3,27 +3,33 @@ import { BibliotecaService } from './Biblioteca';
 import { Livro } from './Livro';
 import { Membro } from './Membro';
 
+// Classe responsável por interagir com o usuário via terminal.
 class BibliotecaCLI {
   private biblioteca: BibliotecaService;
   private rl: readline.Interface;
 
   constructor() {
     this.biblioteca = new BibliotecaService();
+    // Configura a leitura de dados do teclado (stdin) e escrita na tela (stdout)
     this.rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout
     });
   }
 
+  // Método auxiliar para transformar a pergunta do readline (callback) em uma Promise (async/await).
+  // Isso permite que o código espere o usuário digitar antes de continuar.
   private question(pergunta: string): Promise<string> {
     return new Promise((resolve) => {
       this.rl.question(pergunta, resolve);
     });
   }
 
+  // Ponto de entrada da aplicação
   public async iniciar(): Promise<void> {
     console.log('=== SISTEMA DE BIBLIOTECA ===');
     
+    // Loop infinito para manter o menu rodando até o usuário escolher "Sair"
     while (true) {
       await this.mostrarMenuPrincipal();
     }
@@ -50,12 +56,14 @@ class BibliotecaCLI {
         break;
       case '4':
         console.log('Saindo do sistema...');
-            this.rl.close();
-            process.exit(0);
+            this.rl.close(); // Fecha a interface de leitura
+            process.exit(0); // Encerra o programa Node.js
       default:
         console.log('Opção inválida!');
     }
   }
+
+  // --- Submenus para cada seção do sistema ---
 
   private async menuLivros(): Promise<void> {
     while (true) {
@@ -82,7 +90,7 @@ class BibliotecaCLI {
           await this.removerLivro();
           break;
         case '5':
-          return;
+          return; // Sai do loop e volta para o menu anterior
         default:
           console.log('Opção inválida!');
       }
@@ -153,6 +161,8 @@ class BibliotecaCLI {
     }
   }
 
+  // --- Funções de interação (perguntar dados e chamar o serviço) ---
+
   private async adicionarLivro(): Promise<void> {
     console.log('\n--- ADICIONAR LIVRO ---');
     const titulo = await this.question('Título: ');
@@ -193,6 +203,7 @@ class BibliotecaCLI {
     }
 
     console.log(`Livro encontrado: ${livro.toString()}`);
+    // Permite deixar em branco para não alterar
     const novoTitulo = await this.question('Novo título (deixe em branco para manter): ');
     const novoAutor = await this.question('Novo autor (deixe em branco para manter): ');
     const novoAnoStr = await this.question('Novo ano (deixe em branco para manter): ');
@@ -344,6 +355,6 @@ class BibliotecaCLI {
   }
 }
 
-// Inicialização do sistema
+// Inicializa e roda o sistema
 const cli = new BibliotecaCLI();
 cli.iniciar();
