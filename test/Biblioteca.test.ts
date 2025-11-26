@@ -1,14 +1,12 @@
-// Biblioteca.test.ts
-
 import { BibliotecaService } from '../src/Library/Biblioteca';
 import { Livro } from '../src/Library/Livro';
-import { Emprestimo } from '../src/Library/Emprestimo';
 import { Membro } from '../src/User/Membro';
+import { Emprestimo } from '../src/Library/Emprestimo';
 import { GerenciadorArquivos } from '../src/utils/GerenciadorArquivos';
 
 // 1. MOCKANDO O SISTEMA DE ARQUIVOS
 // Isso substitui a implementação real do GerenciadorArquivos pela nossa simulação.
-jest.mock('./GerenciadorArquivos');
+jest.mock('../src/utils/GerenciadorArquivos'); 
 const MockGerenciadorArquivos = GerenciadorArquivos as jest.Mock<GerenciadorArquivos>;
 
 // Dados de teste
@@ -29,7 +27,7 @@ describe('BibliotecaService - Testes de Unidade e Persistência', () => {
     beforeEach(() => {
         // Zera todas as simulações e funções mockadas antes de cada teste
         jest.clearAllMocks();
-
+        
         // Define as funções mockadas
         mockCarregarDados = jest.fn((tipo: string) => {
             // Garante que o sistema inicia sempre com listas vazias ou o dado configurado
@@ -52,12 +50,12 @@ describe('BibliotecaService - Testes de Unidade e Persistência', () => {
         biblioteca = new BibliotecaService();
         mockSalvarDados.mockClear(); // Limpa chamadas de salvarDados do construtor
     });
-
+    
     // --- TESTES DE LIVROS ---
-
+    
     test('1. Deve adicionar um livro e chamar salvarDados', () => {
         biblioteca.adicionarLivro(mockLivro);
-
+        
         expect(biblioteca.listarLivros()).toHaveLength(1);
         expect(mockSalvarDados).toHaveBeenCalledTimes(3); // Verifica persistência: livros, membros, emprestimos
         expect(mockLivro.disponivel).toBe(true);
@@ -66,9 +64,9 @@ describe('BibliotecaService - Testes de Unidade e Persistência', () => {
     test('2. Deve atualizar o título de um livro e chamar salvarDados', () => {
         biblioteca.adicionarLivro(mockLivro);
         mockSalvarDados.mockClear();
-
+        
         const sucesso = biblioteca.atualizarLivro(mockLivro.isbn, { titulo: '1984 - Nova Edição' });
-
+        
         expect(sucesso).toBe(true);
         expect(biblioteca.buscarLivroPorIsbn(mockLivro.isbn)?.titulo).toBe('1984 - Nova Edição');
         expect(mockSalvarDados).toHaveBeenCalledTimes(3); // Verifica persistência
@@ -79,17 +77,17 @@ describe('BibliotecaService - Testes de Unidade e Persistência', () => {
         mockSalvarDados.mockClear();
 
         const sucesso = biblioteca.removerLivro(mockLivro.isbn);
-
+        
         expect(sucesso).toBe(true);
         expect(biblioteca.listarLivros()).toHaveLength(0);
         expect(mockSalvarDados).toHaveBeenCalledTimes(3); // Verifica persistência
     });
 
     // --- TESTES DE MEMBROS ---
-
+    
     test('4. Deve adicionar um membro e chamar salvarDados', () => {
         biblioteca.adicionarMembro(mockMembro);
-
+        
         expect(biblioteca.listarMembros()).toHaveLength(1);
         expect(mockSalvarDados).toHaveBeenCalledTimes(3); // Verifica persistência
     });
@@ -97,9 +95,9 @@ describe('BibliotecaService - Testes de Unidade e Persistência', () => {
     test('5. Deve atualizar o telefone de um membro e chamar salvarDados', () => {
         biblioteca.adicionarMembro(mockMembro);
         mockSalvarDados.mockClear();
-
+        
         const sucesso = biblioteca.atualizarMembro(mockMembro.numeroMatricula, { telefone: '99999-0000' });
-
+        
         expect(sucesso).toBe(true);
         expect(biblioteca.buscarMembroPorMatricula(mockMembro.numeroMatricula)?.telefone).toBe('99999-0000');
         expect(mockSalvarDados).toHaveBeenCalledTimes(3); // Verifica persistência
@@ -110,7 +108,7 @@ describe('BibliotecaService - Testes de Unidade e Persistência', () => {
         mockSalvarDados.mockClear();
 
         const sucesso = biblioteca.removerMembro(mockMembro.numeroMatricula);
-
+        
         expect(sucesso).toBe(true);
         expect(biblioteca.listarMembros()).toHaveLength(0);
         expect(mockSalvarDados).toHaveBeenCalledTimes(3); // Verifica persistência
@@ -121,26 +119,26 @@ describe('BibliotecaService - Testes de Unidade e Persistência', () => {
     test('7. Deve realizar um empréstimo com sucesso', () => {
         biblioteca.adicionarLivro(mockLivro);
         biblioteca.adicionarMembro(mockMembro);
-        mockSalvarDados.mockClear();
+        mockSalvarDados.mockClear(); 
 
         const resultado = biblioteca.realizarEmprestimo(mockLivro.isbn, mockMembro.numeroMatricula);
-
+        
         expect(resultado.sucesso).toBe(true);
         expect(resultado.mensagem).toBe("Empréstimo realizado com sucesso.");
-        expect(mockLivro.disponivel).toBe(false);
+        expect(mockLivro.disponivel).toBe(false); 
         expect(biblioteca.listarEmprestimosAtivos()).toHaveLength(1);
         expect(mockSalvarDados).toHaveBeenCalledTimes(3); // Verifica persistência
     });
 
     test('8. Deve falhar ao realizar empréstimo se o livro não estiver disponível', () => {
         // Simula livro já emprestado
-        mockLivro.disponivel = false;
+        mockLivro.disponivel = false; 
         biblioteca.adicionarLivro(mockLivro);
         biblioteca.adicionarMembro(mockMembro);
         mockSalvarDados.mockClear();
 
         const resultado = biblioteca.realizarEmprestimo(mockLivro.isbn, mockMembro.numeroMatricula);
-
+        
         expect(resultado.sucesso).toBe(false);
         expect(resultado.mensagem).toBe("Livro já está emprestado.");
         expect(mockSalvarDados).not.toHaveBeenCalled(); // Não deve salvar se falhar
@@ -148,24 +146,24 @@ describe('BibliotecaService - Testes de Unidade e Persistência', () => {
 
     test('9. Deve falhar ao realizar empréstimo se o membro atingir o limite (3)', () => {
         biblioteca.adicionarMembro(mockMembro);
-
+        
         // 4 livros para testar o limite
         const livros = [
-            new Livro('L1', 'A1', '1', 2000),
-            new Livro('L2', 'A2', '2', 2000),
+            new Livro('L1', 'A1', '1', 2000), 
+            new Livro('L2', 'A2', '2', 2000), 
             new Livro('L3', 'A3', '3', 2000),
             new Livro('L4', 'A4', '4', 2000)
         ];
         livros.forEach(l => biblioteca.adicionarLivro(l));
-
+        
         // 1. Realiza 3 empréstimos
         biblioteca.realizarEmprestimo(livros[0].isbn, mockMembro.numeroMatricula);
         biblioteca.realizarEmprestimo(livros[1].isbn, mockMembro.numeroMatricula);
         biblioteca.realizarEmprestimo(livros[2].isbn, mockMembro.numeroMatricula);
-
+        
         // 2. Tenta o 4º empréstimo
         const resultadoFinal = biblioteca.realizarEmprestimo(livros[3].isbn, mockMembro.numeroMatricula);
-
+        
         expect(biblioteca.listarEmprestimosAtivos()).toHaveLength(3);
         expect(resultadoFinal.sucesso).toBe(false);
         expect(resultadoFinal.mensagem).toBe("Membro atingiu o limite de 3 empréstimos simultâneos.");
@@ -183,17 +181,17 @@ describe('BibliotecaService - Testes de Unidade e Persistência', () => {
             return [];
         });
         // Recria o serviço para carregar o estado
-        biblioteca = new BibliotecaService();
+        biblioteca = new BibliotecaService(); 
         mockSalvarDados.mockClear();
 
         // 2. Execução
         const resultado = biblioteca.registrarDevolucao(mockLivro.isbn);
-
+        
         // 3. Verificação
         expect(resultado.sucesso).toBe(true);
         expect(resultado.mensagem).toBe("Devolução registrada com sucesso.");
         // Livro deve ser liberado
-        expect(biblioteca.buscarLivroPorIsbn(mockLivro.isbn)?.disponivel).toBe(true);
+        expect(biblioteca.buscarLivroPorIsbn(mockLivro.isbn)?.disponivel).toBe(true); 
         // Empréstimo deve estar marcado como devolvido
         const historico = biblioteca.listarHistoricoEmprestimos();
         expect(historico.find(e => e.livro.isbn === mockLivro.isbn)?.devolvido).toBe(true);
@@ -202,14 +200,14 @@ describe('BibliotecaService - Testes de Unidade e Persistência', () => {
 
     test('11. Deve falhar ao registrar devolução para um empréstimo inexistente/já devolvido', () => {
         const resultado = biblioteca.registrarDevolucao('ISBN-FALSO');
-
+        
         expect(resultado.sucesso).toBe(false);
         expect(resultado.mensagem).toBe("Não foi encontrado empréstimo ativo para este livro.");
-        expect(mockSalvarDados).not.toHaveBeenCalled();
+        expect(mockSalvarDados).not.toHaveBeenCalled(); 
     });
-
+    
     // --- TESTES DE ESTRUTURA ---
-
+    
     test('12. Teste de desserialização: Deve reconstruir Empréstimos corretamente', () => {
         const livroEmprestado = new Livro('Livro Único', 'Autor', 'U001', 2020);
         const membroAtivo = new Membro('Membro Ativo', 'End', 'Tel', 'A001');
@@ -225,11 +223,11 @@ describe('BibliotecaService - Testes de Unidade e Persistência', () => {
         });
 
         const bibliotecaNova = new BibliotecaService();
-
+        
         // Verifica se o objeto Emprestimo foi criado e se as referências (livro/membro) foram religadas
         expect(bibliotecaNova.listarEmprestimosAtivos()).toHaveLength(1);
         const emprestimo = bibliotecaNova.listarEmprestimosAtivos()[0];
-
+        
         // Verifica se é uma instância da classe correta
         expect(emprestimo).toBeInstanceOf(Emprestimo);
         expect(emprestimo.livro).toBeInstanceOf(Livro);

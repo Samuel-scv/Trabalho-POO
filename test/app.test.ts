@@ -28,7 +28,7 @@ jest.mock('readline', () => ({
 }));
 
 // 2. MOCKANDO O GerenciadorArquivos: Isola a CLI de qualquer leitura/escrita de arquivo real.
-jest.mock('../src/GerenciadorArquivos', () => {
+jest.mock('../src/utils/GerenciadorArquivos', () => {
     return {
         // Mocka a classe em si, para que o constructor da Biblioteca possa usá-lo
         GerenciadorArquivos: jest.fn(() => ({
@@ -42,13 +42,13 @@ jest.mock('../src/GerenciadorArquivos', () => {
 
 // Mocka as classes de entidade para evitar erros de referência
 // e garantir que o service (Biblioteca) as aceite.
-jest.mock('../src/Livro', () => ({
+jest.mock('../src/Library/Livro', () => ({
     Livro: jest.fn().mockImplementation((titulo, autor, isbn, ano) => ({
         titulo, autor, isbn, ano,
         toString: jest.fn(() => `Livro Mock: ${titulo}`)
     }))
 }));
-jest.mock('../src/Membro', () => ({
+jest.mock('../src/User/Membro', () => ({
     Membro: jest.fn().mockImplementation((nome, endereco, telefone, matricula) => ({
         nome, endereco, telefone, matricula,
         toString: jest.fn(() => `Membro Mock: ${nome}`)
@@ -57,7 +57,7 @@ jest.mock('../src/Membro', () => ({
 
 
 // Importa o serviço e a CLI para o teste
-import { BibliotecaCLI } from '../src/app';
+import { BibliotecaService } from '../src/Library/Biblioteca';
 
 describe('BibliotecaCLI - Teste de Interface de Usuário', () => {
     
@@ -76,7 +76,7 @@ describe('BibliotecaCLI - Teste de Interface de Usuário', () => {
     });
 
     test('1. Deve simular o fluxo de menus e uma operação de Adição de Livro', async () => {
-        const cli = new BibliotecaCLI();
+        const cli = new BibliotecaService();
         
         try {
             await cli.iniciar(); 

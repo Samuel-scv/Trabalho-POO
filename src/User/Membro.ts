@@ -1,4 +1,4 @@
-import { Pessoa } from './Pessoa.ts';
+import { Pessoa } from './Pessoa';
 
 // A classe Membro herda tudo de Pessoa (nome, endereço, telefone).
 export class Membro extends Pessoa {
