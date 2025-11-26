@@ -1,7 +1,7 @@
 import * as readline from 'readline';
-import { BibliotecaService } from './Biblioteca';
-import { Livro } from './Livro';
-import { Membro } from './Membro';
+import { BibliotecaService } from './Library/Biblioteca';
+import { Livro } from './Library/Livro';
+import { Membro } from './User/Membro';
 
 // Classe responsável por interagir com o usuário via terminal.
 export class BibliotecaCLI {
@@ -28,7 +28,7 @@ export class BibliotecaCLI {
   // Ponto de entrada da aplicação
   public async iniciar(): Promise<void> {
     console.log('=== SISTEMA DE BIBLIOTECA ===');
-    
+
     // Loop infinito para manter o menu rodando até o usuário escolher "Sair"
     while (true) {
       await this.mostrarMenuPrincipal();
@@ -184,7 +184,7 @@ export class BibliotecaCLI {
   private listarLivros(): void {
     console.log('\n--- LISTA DE LIVROS ---');
     const livros = this.biblioteca.listarLivros();
-    
+
     if (livros.length === 0) {
       console.log('Nenhum livro cadastrado.');
     } else {
@@ -195,7 +195,7 @@ export class BibliotecaCLI {
   private async atualizarLivro(): Promise<void> {
     console.log('\n--- ATUALIZAR LIVRO ---');
     const isbn = await this.question('ISBN do livro a ser atualizado: ');
-    
+
     const livro = this.biblioteca.buscarLivroPorIsbn(isbn);
     if (!livro) {
       console.log('Livro não encontrado!');
@@ -227,12 +227,12 @@ export class BibliotecaCLI {
   private async removerLivro(): Promise<void> {
     console.log('\n--- REMOVER LIVRO ---');
     const isbn = await this.question('ISBN do livro a ser removido: ');
-    
+
     const livro = this.biblioteca.buscarLivroPorIsbn(isbn);
     if (livro) {
       console.log(`Livro a ser removido: ${livro.toString()}`);
       const confirmacao = await this.question('Confirmar remoção? (s/n): ');
-      
+
       if (confirmacao.toLowerCase() === 's') {
         this.biblioteca.removerLivro(isbn);
         console.log('Livro removido com sucesso!');
@@ -259,7 +259,7 @@ export class BibliotecaCLI {
   private listarMembros(): void {
     console.log('\n--- LISTA DE MEMBROS ---');
     const membros = this.biblioteca.listarMembros();
-    
+
     if (membros.length === 0) {
       console.log('Nenhum membro cadastrado.');
     } else {
@@ -270,7 +270,7 @@ export class BibliotecaCLI {
   private async atualizarMembro(): Promise<void> {
     console.log('\n--- ATUALIZAR MEMBRO ---');
     const matricula = await this.question('Matrícula do membro a ser atualizado: ');
-    
+
     const membro = this.biblioteca.buscarMembroPorMatricula(matricula);
     if (!membro) {
       console.log('Membro não encontrado!');
@@ -298,12 +298,12 @@ export class BibliotecaCLI {
   private async removerMembro(): Promise<void> {
     console.log('\n--- REMOVER MEMBRO ---');
     const matricula = await this.question('Matrícula do membro a ser removido: ');
-    
+
     const membro = this.biblioteca.buscarMembroPorMatricula(matricula);
     if (membro) {
       console.log(`Membro a ser removido: ${membro.toString()}`);
       const confirmacao = await this.question('Confirmar remoção? (s/n): ');
-      
+
       if (confirmacao.toLowerCase() === 's') {
         this.biblioteca.removerMembro(matricula);
         console.log('Membro removido com sucesso!');
@@ -327,7 +327,7 @@ export class BibliotecaCLI {
   private listarEmprestimosAtivos(): void {
     console.log('\n--- EMPRÉSTIMOS ATIVOS ---');
     const emprestimos = this.biblioteca.listarEmprestimosAtivos();
-    
+
     if (emprestimos.length === 0) {
       console.log('Nenhum empréstimo ativo.');
     } else {
@@ -346,7 +346,7 @@ export class BibliotecaCLI {
   private listarHistoricoEmprestimos(): void {
     console.log('\n--- HISTÓRICO DE EMPRÉSTIMOS ---');
     const emprestimos = this.biblioteca.listarHistoricoEmprestimos();
-    
+
     if (emprestimos.length === 0) {
       console.log('Nenhum empréstimo no histórico.');
     } else {

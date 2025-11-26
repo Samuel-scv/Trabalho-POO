@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "livroIsbn": "9788575226568",
+    "membroMatricula": "9465901296442",
+    "_dataEmprestimo": "2025-11-26T17:52:27.030Z",
+    "_dataDevolucao": "2025-11-26T17:52:49.202Z",
+    "_devolvido": true
+  },
+  {
+    "livroIsbn": "9788575226568",
+    "membroMatricula": "012367527862",
+    "_dataEmprestimo": "2025-11-26T17:53:01.176Z",
+    "_dataDevolucao": null,
+    "_devolvido": false
+  }
+]

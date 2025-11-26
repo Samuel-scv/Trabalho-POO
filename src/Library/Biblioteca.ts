@@ -1,7 +1,7 @@
 import { Livro } from './Livro';
-import { Membro } from './Membro';
+import { Membro } from '../User/Membro';
 import { Emprestimo } from './Emprestimo';
-import { GerenciadorArquivos } from './GerenciadorArquivos';
+import { GerenciadorArquivos } from '../utils/GerenciadorArquivos';
 
 export class BibliotecaService {
   // Listas em memória para manipular os dados rapidamente.
@@ -28,7 +28,7 @@ export class BibliotecaService {
 
     // 2. Carrega e recria objetos Membro
     const dadosMembros = this.gerenciadorArquivos.carregar('membros');
-    this.membros = dadosMembros.map((d: any) => 
+    this.membros = dadosMembros.map((d: any) =>
       new Membro(d._nome, d._endereco, d._telefone, d._numeroMatricula)
     );
 
@@ -38,16 +38,16 @@ export class BibliotecaService {
     this.emprestimos = dadosEmprestimos.map((d: any) => {
       const livro = this.buscarLivroPorIsbn(d.livroIsbn);
       const membro = this.buscarMembroPorMatricula(d.membroMatricula);
-      
+
       // Só recria o empréstimo se o livro e o membro ainda existirem no sistema.
       if (livro && membro) {
         const emprestimo = new Emprestimo(livro, membro, new Date(d._dataEmprestimo));
-        
+
         if (d._devolvido) {
           emprestimo.devolvido = true;
           emprestimo.dataDevolucao = new Date(d._dataDevolucao);
         }
-        
+
         return emprestimo;
       }
       return null;
@@ -58,7 +58,7 @@ export class BibliotecaService {
   private salvarDados(): void {
     this.gerenciadorArquivos.salvarDados('livros', this.livros);
     this.gerenciadorArquivos.salvarDados('membros', this.membros);
-    
+
     // Para empréstimos, salvamos apenas os IDs (ISBN e Matrícula) para economizar espaço
     // e facilitar a reconstrução dos relacionamentos depois.
     const emprestimosParaSalvar = this.emprestimos.map(emp => ({
@@ -68,7 +68,7 @@ export class BibliotecaService {
       _dataDevolucao: emp.dataDevolucao?.toISOString() || null,
       _devolvido: emp.devolvido
     }));
-    
+
     this.gerenciadorArquivos.salvarDados('emprestimos', emprestimosParaSalvar);
   }
 

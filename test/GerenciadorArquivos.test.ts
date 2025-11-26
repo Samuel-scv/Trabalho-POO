@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { GerenciadorArquivos, TipoDado } from '../src/GerenciadorArquivos';
+import { GerenciadorArquivos, TipoDado } from '../src/utils/GerenciadorArquivos';
 
 // 1. MOCKANDO O MÓDULO FS (File System)
 // Isso impede que os testes criem arquivos no seu disco real.
@@ -39,7 +39,7 @@ describe('GerenciadorArquivos', () => {
              }
              return args.join('/');
         });
-        
+
         gerenciador = new GerenciadorArquivos();
     });
 
@@ -47,13 +47,13 @@ describe('GerenciadorArquivos', () => {
 
     test('1. Deve salvar dados corretamente em formato JSON indentado', () => {
         (fs.existsSync as jest.Mock).mockReturnValue(true); // Simula que 'data' existe
-        
+
         gerenciador.salvarDados(tipo, mockData);
-        
+
         // Verifica se o diretório foi garantido (chamado mkdirSync)
-        // Note: Neste mock, é chamado, mas não faz nada. 
+        // Note: Neste mock, é chamado, mas não faz nada.
         // O teste de garantirdiretorio abaixo valida a lógica de mkdirSync/existsSync
-        
+
         // 1. Verifica se writeFileSync foi chamado com o caminho correto
         expect(fs.writeFileSync).toHaveBeenCalledWith(filePath, expect.any(String), 'utf-8');
 
@@ -61,7 +61,7 @@ describe('GerenciadorArquivos', () => {
         const expectedJson = JSON.stringify(mockData, null, 2);
         expect(fs.writeFileSync).toHaveBeenCalledWith(filePath, expectedJson, 'utf-8');
     });
-    
+
     // --- TESTES DE CARREGAMENTO ---
 
     test('2. Deve carregar dados corretamente de um arquivo existente', () => {
@@ -70,7 +70,7 @@ describe('GerenciadorArquivos', () => {
         (fs.readFileSync as jest.Mock).mockReturnValue(dataJson); // Simula o conteúdo lido
 
         const loadedData = gerenciador.carregar(tipo);
-        
+
         expect(fs.readFileSync).toHaveBeenCalledWith(filePath, 'utf-8');
         expect(loadedData).toEqual(mockData);
     });
@@ -79,7 +79,7 @@ describe('GerenciadorArquivos', () => {
         (fs.existsSync as jest.Mock).mockReturnValue(false); // Simula que o arquivo NÃO existe
 
         const loadedData = gerenciador.carregar(tipo);
-        
+
         expect(loadedData).toEqual([]);
         expect(fs.readFileSync).not.toHaveBeenCalled(); // Não deve tentar ler
     });
@@ -89,7 +89,7 @@ describe('GerenciadorArquivos', () => {
         (fs.readFileSync as jest.Mock).mockReturnValue('   \n '); // Simula arquivo vazio
 
         const loadedData = gerenciador.carregar(tipo);
-        
+
         expect(loadedData).toEqual([]);
     });
 
@@ -98,7 +98,7 @@ describe('GerenciadorArquivos', () => {
         (fs.readFileSync as jest.Mock).mockReturnValue('{"objeto": "nao-array"}'); // Simula objeto (não array)
 
         const loadedData = gerenciador.carregar(tipo);
-        
+
         expect(loadedData).toEqual([]);
     });
 });

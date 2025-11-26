@@ -1,5 +1,5 @@
 import { Livro } from './Livro';
-import { Membro } from './Membro';
+import { Membro } from '../User/Membro';
 
 export class Emprestimo {
   private _dataDevolucao: Date | null = null;
@@ -46,10 +46,10 @@ export class Emprestimo {
   // Mostra a data de devolução apenas se ela existir (if ternário).
   public toString(): string {
     const status = this._devolvido ? "Devolvido" : "Ativo";
-    const devolucao = this._devolvido && this._dataDevolucao 
-      ? `, Devolução: ${this._dataDevolucao.toLocaleDateString('pt-BR')}` 
+    const devolucao = this._devolvido && this._dataDevolucao
+      ? `, Devolução: ${this._dataDevolucao.toLocaleDateString('pt-BR')}`
       : "";
-    
+
     return `Empréstimo ${status}: ${this._livro.titulo} para ${this._membro.nome} (Empréstimo: ${this._dataEmprestimo.toLocaleDateString('pt-BR')}${devolucao})`;
   }
 }

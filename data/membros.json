@@ -1,8 +1,14 @@
 [
   {
-    "_nome": "samuel",
-    "_endereco": "na puta que pariu",
-    "_telefone": "1898971789612789",
-    "_numeroMatricula": "18723"
+    "_nome": "Rafael",
+    "_endereco": "Rua Ali Perto",
+    "_telefone": "(53) 1111-2222",
+    "_numeroMatricula": "9465901296442"
+  },
+  {
+    "_nome": "Victor",
+    "_endereco": "Rua Lobo da Costa Nº 12",
+    "_telefone": "(53) 9274-2849",
+    "_numeroMatricula": "012367527862"
   }
 ]

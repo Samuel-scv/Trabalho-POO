@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "start": "npx tsx src/app",
     "test": "jest"
   },
   "devDependencies": {
